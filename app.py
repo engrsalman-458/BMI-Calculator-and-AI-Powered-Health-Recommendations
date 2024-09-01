@@ -3,7 +3,7 @@ import anthropic
 import pandas as pd
 
 
-api_key= st.secret["api_key"]
+api_key= st.secrets["api_key"]
 
 def calculate_bmi(weight, height):
     return weight / (height ** 2)
