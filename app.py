@@ -2,6 +2,9 @@ import streamlit as st
 import anthropic
 import pandas as pd
 
+
+api_key= st.secret["api_key"]
+
 def calculate_bmi(weight, height):
     return weight / (height ** 2)
 
