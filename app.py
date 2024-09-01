@@ -3,7 +3,7 @@ import anthropic
 import pandas as pd
 
 
-#api_key= st.secrets["api_key"]
+api_key= st.secrets["api_key"]
 
 def calculate_bmi(weight, height):
     return weight / (height ** 2)
@@ -52,7 +52,7 @@ def fetch_anthropic_recommendations(api_key, bmi_value, category):
 st.title("BMI Calculator and AI-Powered Health Recommendations")
 
 # Access the API key from Streamlit secrets
-api_key = st.secrets["anthropic"]["api_key"]
+#api_key = st.secrets["anthropic"]["api_key"]
 
 # Input fields
 weight = st.number_input("Enter your weight (kg)", min_value=1.0, max_value=300.0, value=70.0)
