@@ -48,8 +48,10 @@ def fetch_anthropic_recommendations(api_key, bmi_value, category):
 # Streamlit app structure
 st.title("BMI Calculator and AI-Powered Health Recommendations")
 
+# Access the API key from Streamlit secrets
+api_key = st.secrets["anthropic"]["api_key"]
+
 # Input fields
-api_key = st.text_input("Enter your Anthropic API Key", type="password")
 weight = st.number_input("Enter your weight (kg)", min_value=1.0, max_value=300.0, value=70.0)
 height = st.number_input("Enter your height (m)", min_value=0.5, max_value=2.5, value=1.7)
 
@@ -58,9 +60,7 @@ password = st.text_input("Enter 6-digit password to view results", type="passwor
 
 # Button to trigger BMI calculation and recommendations
 if st.button("Calculate BMI and Get AI Recommendations"):
-    if not api_key:
-        st.error("Please enter your Anthropic API key.")
-    elif password != "salman":  # Replace "123456" with the desired 6-digit password
+    if password != "salman":  # Replace "123456" with the desired 6-digit password
         st.error("Incorrect password. Please enter the correct 6-digit password.")
     else:
         # Calculate BMI and categorize
