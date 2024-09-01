@@ -41,7 +41,6 @@ def fetch_anthropic_recommendations(api_key, bmi_value, category):
     )
     
     # Return the AI's response
-    #return message["content"]
     raw_context = message.content
     itinery = raw_context[0].text
     return itinery
@@ -51,14 +50,18 @@ st.title("BMI Calculator and AI-Powered Health Recommendations")
 
 # Input fields
 api_key = st.text_input("Enter your Anthropic API Key", type="password")
-#age = st.number_input("Enter your age", min_value=1, max_value=120, value=30)
 weight = st.number_input("Enter your weight (kg)", min_value=1.0, max_value=300.0, value=70.0)
 height = st.number_input("Enter your height (m)", min_value=0.5, max_value=2.5, value=1.7)
+
+# 6-digit password field
+password = st.text_input("Enter 6-digit password to view results", type="password")
 
 # Button to trigger BMI calculation and recommendations
 if st.button("Calculate BMI and Get AI Recommendations"):
     if not api_key:
         st.error("Please enter your Anthropic API key.")
+    elif password != "salman":  # Replace "123456" with the desired 6-digit password
+        st.error("Incorrect password. Please enter the correct 6-digit password.")
     else:
         # Calculate BMI and categorize
         bmi = calculate_bmi(weight, height)
