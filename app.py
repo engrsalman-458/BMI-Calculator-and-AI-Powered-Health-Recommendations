@@ -1,9 +1,10 @@
 import streamlit as st
-import anthropic
+import os
 import pandas as pd
+from groq import Groq
 
-
-api_key= st.secrets["api_key"]
+# Get Groq API key from Streamlit secrets
+api_key = st.secrets["api_key"]
 
 def calculate_bmi(weight, height):
     return weight / (height ** 2)
@@ -18,41 +19,28 @@ def get_bmi_category(bmi):
     else:
         return "Obese"
 
-def fetch_anthropic_recommendations(api_key, bmi_value, category):
-    client = anthropic.Anthropic(api_key=api_key)  # Initialize the client with the API key
-    
+def fetch_groq_recommendations(api_key, bmi_value, category):
+    client = Groq(api_key=api_key)  # Initialize the Groq client
+
     # Construct the AI prompt
     prompt = f"You are a nutrition and fitness expert. Based on a BMI of {bmi_value} ({category} category), suggest a diet plan and workout routine that would be most effective."
 
-    # Generate the AI response
-    message = client.messages.create(
-        model="claude-3-5-sonnet-20240620",
-        max_tokens=500,
-        temperature=0.7,  # You can adjust the creativity of responses using temperature
-        system="You are a nutrition and fitness expert. Respond with detailed and actionable advice.",
+    # Generate the AI response using Groq's Llama model
+    message = client.chat.completions.create(
         messages=[
             {
                 "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-                ]
+                "content": prompt
             }
-        ]
+        ],
+        model="llama3-8b-8192",  # Groq's model
     )
-    
+
     # Return the AI's response
-    raw_context = message.content
-    itinery = raw_context[0].text
-    return itinery
+    return message.choices[0].message.content
 
 # Streamlit app structure
 st.title("BMI Calculator and AI-Powered Health Recommendations")
-
-# Access the API key from Streamlit secrets
-#api_key = st.secrets["anthropic"]["api_key"]
 
 # Input fields
 weight = st.number_input("Enter your weight (kg)", min_value=1.0, max_value=300.0, value=70.0)
@@ -63,7 +51,7 @@ password = st.text_input("Enter 6-digit password to view results", type="passwor
 
 # Button to trigger BMI calculation and recommendations
 if st.button("Calculate BMI and Get AI Recommendations"):
-    if password != "salman":  # Replace "123456" with the desired 6-digit password
+    if password != "salman":  # Replace with your desired password
         st.error("Incorrect password. Please enter the correct 6-digit password.")
     else:
         # Calculate BMI and categorize
@@ -78,7 +66,7 @@ if st.button("Calculate BMI and Get AI Recommendations"):
         # Get and display AI recommendations
         st.subheader("AI-Powered Recommendations")
         try:
-            ai_recommendations = fetch_anthropic_recommendations(api_key, bmi, category)
+            ai_recommendations = fetch_groq_recommendations(api_key, bmi, category)
             st.write(ai_recommendations)
         except Exception as e:
             st.error(f"Error fetching AI recommendations: {e}")
